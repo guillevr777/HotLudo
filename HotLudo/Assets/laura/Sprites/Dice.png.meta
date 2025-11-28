@@ -1,19 +1,25 @@
 fileFormatVersion: 2
-guid: 1eea1149a027ddd48830707cc6514151
+guid: 35f7230fdae8b524c98a16e5b7f6d9c4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3730268908812959155
-    second: sprite-256px-4_0
+      213: -2205863333093305225
+    second: Dice_0
   - first:
-      213: -3360527663318769165
-    second: sprite-256px-4_1
+      213: -5420220854288092238
+    second: Dice_1
   - first:
-      213: 7158664821788791390
-    second: sprite-256px-4_2
+      213: 1094064525842813209
+    second: Dice_2
   - first:
-      213: 7017592117493475111
-    second: sprite-256px-4_3
+      213: 7934114944782325874
+    second: Dice_3
+  - first:
+      213: -880043905950401250
+    second: Dice_4
+  - first:
+      213: -5478230469006044976
+    second: Dice_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -122,89 +128,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sprite-256px-4_0
+      name: Dice_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 236
-        width: 263
-        height: 214
+        x: 26
+        y: 171
+        width: 137
+        height: 136
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 2, z: 2, w: 1}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3bdfa7a0fc394c330800000000000000
-      internalID: 3730268908812959155
+      spriteID: 7741ae75cf23361e0800000000000000
+      internalID: -2205863333093305225
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sprite-256px-4_1
+      name: Dice_1
       rect:
         serializedVersion: 2
-        x: 265
-        y: 234
-        width: 263
-        height: 216
+        x: 196
+        y: 172
+        width: 139
+        height: 134
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 0, z: 2, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3f1e20225e10d51d0800000000000000
-      internalID: -3360527663318769165
+      spriteID: 2b37effb9d187c4b0800000000000000
+      internalID: -5420220854288092238
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sprite-256px-4_2
+      name: Dice_2
       rect:
         serializedVersion: 2
-        x: 4
-        y: 10
-        width: 261
-        height: 219
+        x: 371
+        y: 172
+        width: 133
+        height: 136
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 2, z: 1, w: 1}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e525ec82abfa85360800000000000000
-      internalID: 7158664821788791390
+      spriteID: 9119730c3e5ee2f00800000000000000
+      internalID: 1094064525842813209
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sprite-256px-4_3
+      name: Dice_3
       rect:
         serializedVersion: 2
-        x: 265
-        y: 8
-        width: 262
-        height: 215
+        x: 27
+        y: 21
+        width: 132
+        height: 133
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 0, w: 2}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 727a7cd99de736160800000000000000
-      internalID: 7017592117493475111
+      spriteID: 2785eda6183ab1e60800000000000000
+      internalID: 7934114944782325874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dice_4
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 19
+        width: 130
+        height: 135
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 1, z: 0, w: 2}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1d341feab479c3f0800000000000000
+      internalID: -880043905950401250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dice_5
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 25
+        width: 129
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 1, w: 1}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d05c21d96a69f3b0800000000000000
+      internalID: -5478230469006044976
       vertices: []
       indices: 
       edges: []
@@ -213,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: e4aee9577ff1ff341ab53fd96554b952
     internalID: 0
     vertices: []
     indices: 
@@ -221,12 +271,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      sprite-256px-4_0: 3730268908812959155
-      sprite-256px-4_1: -3360527663318769165
-      sprite-256px-4_2: 7158664821788791390
-      sprite-256px-4_3: 7017592117493475111
+      Dice_0: -2205863333093305225
+      Dice_1: -5420220854288092238
+      Dice_2: 1094064525842813209
+      Dice_3: 7934114944782325874
+      Dice_4: -880043905950401250
+      Dice_5: -5478230469006044976
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

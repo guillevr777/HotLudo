@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 90a01a79bcec7254796d9d88932c10ab
+guid: b50df3e273a46fe49bd2de1e4bd54868
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4288864641222950448
-    second: tableroprovisional_0
+      213: -3644984350019817803
+    second: Gato_azul_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tableroprovisional_0
+      name: Gato_azul_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 580
-        height: 581
+        y: 1
+        width: 737
+        height: 673
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 03eb3d5faab158b30800000000000000
-      internalID: 4288864641222950448
+      spriteID: 5bee53dab0a6a6dc0800000000000000
+      internalID: -3644984350019817803
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tableroprovisional_0: 4288864641222950448
+      Gato_azul_0: -3644984350019817803
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
