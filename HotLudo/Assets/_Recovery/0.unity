@@ -766,7 +766,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1943264809474300332, guid: e6d6e8ff39472814f96cf07850c4453d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.24
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 1943264809474300332, guid: e6d6e8ff39472814f96cf07850c4453d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -808,10 +808,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Die
       objectReference: {fileID: 0}
-    - target: {fileID: 6096283430313863980, guid: e6d6e8ff39472814f96cf07850c4453d, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: c58c3b2ce82e5e043b4fa4da5cc2ac0a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
