@@ -1,16 +1,15 @@
-using UnityEngine;
-using UnityEngine.InputSystem; // Necesario para el nuevo Input System
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MenuNavigatorNew : MonoBehaviour
 {
-    public RectTransform cursor;        // El icono que se mueve
-    public RectTransform[] opciones;    // Opciones del men� (en orden de izquierda a derecha)
+    public RectTransform cursor;
+    public RectTransform[] opciones;
 
     private int index = 0;
 
     void Update()
     {
-        // Navegar a la derecha
         if (Keyboard.current.rightArrowKey.wasPressedThisFrame ||
             Gamepad.current?.dpad.right.wasPressedThisFrame == true)
         {
@@ -19,7 +18,6 @@ public class MenuNavigatorNew : MonoBehaviour
             MoverCursor();
         }
 
-        // Navegar a la izquierda
         if (Keyboard.current.leftArrowKey.wasPressedThisFrame ||
             Gamepad.current?.dpad.left.wasPressedThisFrame == true)
         {
@@ -33,4 +31,7 @@ public class MenuNavigatorNew : MonoBehaviour
     {
         cursor.position = opciones[index].position;
     }
+
+    // Aquí obtenemos 1, 2, 3 o 4 directamente
+    public int NumeroSeleccionado => index + 1;
 }
