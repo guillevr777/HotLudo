@@ -28,18 +28,4 @@ public class Ficha : MonoBehaviour
 
         nuevaCasilla.AñadirFicha(this);
     }
-
-
-    // MATAR UNA FICHA Y LLEVARLA AL SPAWN
-    public void Matar()
-    {
-        if (casillaActual != null)
-            casillaActual.QuitarFicha(this);
-
-        casillaActual = null;
-
-        Vector3 pos = spawnPoint.position;
-        pos.z = -1f;
-        transform.position = pos;
-    }
 }

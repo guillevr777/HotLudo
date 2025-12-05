@@ -98,11 +98,6 @@ public class MovimientoFicha : MonoBehaviour
 
     void Update()
     {
-        // PROBAR: mover ficha con espacio
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            MoverFicha(ficha, 4);
-        }
     }
 
 }

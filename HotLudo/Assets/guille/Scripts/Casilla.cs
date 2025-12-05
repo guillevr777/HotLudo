@@ -52,15 +52,6 @@ public class Casilla : MonoBehaviour
         return fichasEnCasilla[0].color == fichasEnCasilla[1].color;
     }
 
-
-    // ¿Puede ser atacada?
-    public bool PuedeSerAtacada()
-    {
-        return tipo != TipoCasilla.Segura &&
-               fichasEnCasilla.Count == 1;
-    }
-
-
     public Ficha ObtenerFichaEnemiga(ColorJugador color)
     {
         if (fichasEnCasilla.Count == 1 &&
@@ -83,16 +74,6 @@ public class Casilla : MonoBehaviour
         {
             if (EstaBloqueada())
                 return;
-        }
-
-        if (PuedeSerAtacada())
-        {
-            Ficha enemiga = ObtenerFichaEnemiga(fichaEntrante.color);
-
-            if (enemiga != null)
-            {
-                enemiga.Matar();  
-            }
         }
     }
 }
