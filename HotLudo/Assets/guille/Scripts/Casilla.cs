@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum TipoCasilla { Normal, Segura, Salida, Meta }
@@ -12,13 +12,14 @@ public class Casilla : MonoBehaviour
     public TipoCasilla tipo = TipoCasilla.Normal;
 
     [Header("Posiciones para fichas")]
-    public Transform[] posiciones; // PosA, PosB
+    public Transform[] posiciones; 
 
     [HideInInspector]
     public List<Ficha> fichasEnCasilla = new List<Ficha>();
 
-    // A�adir ficha a esta casilla
-    public void A�adirFicha(Ficha ficha)
+
+    // Añadir ficha a esta casilla
+    public void AñadirFicha(Ficha ficha)
     {
         fichasEnCasilla.Add(ficha);
 
@@ -26,20 +27,72 @@ public class Casilla : MonoBehaviour
         if (slot >= posiciones.Length)
             slot = posiciones.Length - 1;
 
-        ficha.transform.position = posiciones[slot].position;
+        Vector3 nuevaPos = posiciones[slot].position;
+        nuevaPos.z = -1f; 
+        ficha.transform.position = nuevaPos;
+
+        ficha.casillaActual = this;   
+        ComprobarColision(ficha);     
     }
 
-    // Quitar ficha al salir
+
+    // Quitar ficha de esta casilla
     public void QuitarFicha(Ficha ficha)
     {
         fichasEnCasilla.Remove(ficha);
     }
 
-    // Indica si esta casilla est� bloqueada por 2 fichas del mismo color
+
+    // ¿Casilla bloqueada?
     public bool EstaBloqueada()
     {
-        if (fichasEnCasilla.Count < 2) return false;
+        if (fichasEnCasilla.Count < 2)
+            return false;
 
         return fichasEnCasilla[0].color == fichasEnCasilla[1].color;
+    }
+
+
+    // ¿Puede ser atacada?
+    public bool PuedeSerAtacada()
+    {
+        return tipo != TipoCasilla.Segura &&
+               fichasEnCasilla.Count == 1;
+    }
+
+
+    public Ficha ObtenerFichaEnemiga(ColorJugador color)
+    {
+        if (fichasEnCasilla.Count == 1 &&
+            fichasEnCasilla[0].color != color)
+        {
+            return fichasEnCasilla[0];
+        }
+
+        return null;
+    }
+
+
+    // Comprobar colisión al entrar una ficha
+    private void ComprobarColision(Ficha fichaEntrante)
+    {
+        if (tipo == TipoCasilla.Segura)
+            return;
+
+        if (fichasEnCasilla.Count == 2)
+        {
+            if (EstaBloqueada())
+                return;
+        }
+
+        if (PuedeSerAtacada())
+        {
+            Ficha enemiga = ObtenerFichaEnemiga(fichaEntrante.color);
+
+            if (enemiga != null)
+            {
+                enemiga.Matar();  
+            }
+        }
     }
 }

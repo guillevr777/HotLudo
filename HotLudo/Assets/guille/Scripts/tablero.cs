@@ -27,15 +27,20 @@ public class Tablero : MonoBehaviour
         {
             case ColorJugador.Rojo:
                 return caminoRojoFinal[0];
+
             case ColorJugador.Azul:
                 return caminoAzulFinal[0];
+
             case ColorJugador.Amarillo:
                 return caminoAmarilloFinal[0];
+
             case ColorJugador.Verde:
                 return caminoVerdeFinal[0];
         }
+
         return null;
     }
+
 
     // Devuelve una casilla interna del camino final
     public Casilla GetCasillaFinal(ColorJugador color, int paso)
