@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7281236148083592080}
   - component: {fileID: 4622997005854435389}
+  - component: {fileID: -5011680865943567303}
   m_Layer: 0
   m_Name: Gato_rojo
   m_TagString: Untagged
@@ -90,3 +91,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-5011680865943567303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3936251315687661977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0365d0ffa7513b4ab57dd5a2ccd030d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pawn
+  playerIndex: 0
+  pawnIndex: 0

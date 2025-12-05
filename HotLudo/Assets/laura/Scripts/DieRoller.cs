@@ -2,51 +2,58 @@ using UnityEngine;
 
 public class DieRoller : MonoBehaviour
 {
-    [SerializeField] private Sprite[] dieSprites; // Asigna Die_0 a Die_5 en el inspector
+    [SerializeField] private Sprite[] dieSprites;
     private SpriteRenderer sr;
     private Animator anim;
 
-    private int pendingRoll; // resultado que se aplicará al terminar la animación
+    private int pendingRoll;
+
+    public BoardManager boardManager;
+
+    private bool isRolling = false; // <-- NEW: evita clicks durante animación
 
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
 
-        if (sr == null)
-            Debug.LogError("No se encontró SpriteRenderer en el objeto");
+        if (sr == null) Debug.LogError("No se encontró SpriteRenderer");
+        if (anim == null) Debug.LogError("No se encontró Animator");
 
-        if (anim == null)
-            Debug.LogError("No se encontró Animator en el objeto");
-
-        // Al inicio, mostrar Die_0
         if (dieSprites.Length > 0)
             sr.sprite = dieSprites[0];
     }
 
     void OnMouseDown()
     {
+        if (isRolling) return; // <-- NEW: si está rodando, ignorar clic
         RollDie();
     }
 
     void RollDie()
     {
-        // Generar resultado aleatorio y guardarlo
-        pendingRoll = Random.Range(0, dieSprites.Length);
+        isRolling = true; // <-- NEW: bloquear clics
 
-        // Reactivar Animator para reproducir la animación
+        pendingRoll = Random.Range(0, dieSprites.Length);
         anim.enabled = true;
         anim.SetTrigger("RollTrigger");
+
+        Debug.Log("Dado lanzado, resultado será: " + (pendingRoll + 1));
     }
 
-    // Este método lo llamará un Animation Event al final del clip "Roll"
+    // Animation Event debe llamarlo al final de la animación Roll
     public void ApplyResult()
     {
         sr.sprite = dieSprites[pendingRoll];
-
-        // Desactivar Animator para que no sobrescriba el sprite final
         anim.enabled = false;
 
-        Debug.Log("Dado: " + (pendingRoll + 1));
+        int rollNumber = pendingRoll + 1;
+        Debug.Log("Dado finalizó animación mostrando: " + rollNumber);
+
+        // Notificar a BoardManager
+        if (boardManager != null)
+            boardManager.OnDieRolled(rollNumber);
+
+        isRolling = false; // <-- NEW: desbloquear el dado
     }
 }
