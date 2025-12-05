@@ -5,14 +5,27 @@ public class Pawn : MonoBehaviour
     [HideInInspector] public int playerIndex;
     [HideInInspector] public int pawnIndex;
     private Vector3 startPos;
+    private bool isAtHome = true;
 
     public void SetToStartPosition(Vector3 pos)
     {
         startPos = pos;
         transform.position = pos;
+        isAtHome = true;
     }
 
-    // Método simple para mover ficha a otra posición
+    public bool IsAtHome()
+    {
+        return isAtHome;
+    }
+
+    // Marca que la ficha ha salido del home
+    public void LeaveHome()
+    {
+        isAtHome = false;
+    }
+
+    // Método simple para mover ficha a otra posición (mantengo tu implementación)
     public void MoveTo(Vector3 targetPos, float duration = 0.2f)
     {
         StopAllCoroutines();
