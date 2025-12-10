@@ -26,7 +26,6 @@ public class DieRoller : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log(dieSprites.Length);
         if (isRolling) return; // <-- NEW: si está rodando, ignorar clic
         RollDie();
     }
@@ -49,7 +48,6 @@ public class DieRoller : MonoBehaviour
         anim.enabled = false;
 
         int rollNumber = pendingRoll + 1;
-        Debug.Log("Dado finalizó animación mostrando: " + rollNumber);
 
         // Notificar a BoardManager
         if (boardManager != null)
