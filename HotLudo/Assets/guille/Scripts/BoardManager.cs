@@ -59,7 +59,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log($"BoardManager: roll recibido {roll} para jugador {currentPlayerIndex}");
 
         // Si el roll es 5 y es el turno del jugador azul (0), sacar una ficha
-        if (roll == 5 && currentPlayerIndex == 0)
+        if (roll == 5)
         {
             TrySendPawnOutFromHome(currentPlayerIndex);
         }
@@ -69,15 +69,13 @@ public class BoardManager : MonoBehaviour
 
     private void TrySendPawnOutFromHome(int playerIndex)
     {
-        if (playerIndex < 0 || playerIndex >= players.Length) return;
         Transform exitPos = players[playerIndex].exitPosition;
         if (exitPos == null)
         {
-            Debug.LogWarning($"Player {playerIndex} no tiene exitPosition asignada en BoardManager.");
+            Debug.LogWarning($"Player {playerIndex} no tiene exitPosition asignada.");
             return;
         }
 
-        // Buscar una ficha que esté en home (isAtHome)
         for (int i = 0; i < 4; i++)
         {
             GameObject pawnGO = instantiatedPawns[playerIndex, i];
@@ -88,10 +86,8 @@ public class BoardManager : MonoBehaviour
 
             if (pawnScript.IsAtHome())
             {
-                // Mover la ficha a la exitPosition y marcarla fuera del home
-                float moveDuration = 0.25f; // ajusta si quieres
-                pawnScript.MoveTo(exitPos.position, moveDuration);
-                pawnScript.LeaveHome();
+                // Mover usando ExitHome
+                pawnScript.ExitHome(exitPos.position);
                 Debug.Log($"Jugador {playerIndex} - Pawn {i} sale de home a la casilla de salida.");
                 return; // sacamos solo una ficha
             }
@@ -99,6 +95,8 @@ public class BoardManager : MonoBehaviour
 
         Debug.Log($"Jugador {playerIndex} no tiene fichas en home para sacar.");
     }
+
+
 
     // Si luego quieres obtener una ficha:
     public GameObject GetPawn(int playerIndex, int pawnIndex)

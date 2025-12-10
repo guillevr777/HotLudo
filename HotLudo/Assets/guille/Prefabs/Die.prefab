@@ -158,6 +158,7 @@ MonoBehaviour:
   - {fileID: -1778436320341457493, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
   - {fileID: 2941528559377587764, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
   - {fileID: -6774703673271019300, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
+  boardManager: {fileID: 7088557820883691284, guid: b61ce1d30c732c44ca86d3b21ed57bcc, type: 3}
 --- !u!95 &6096283430313863980
 Animator:
   serializedVersion: 7

@@ -26,6 +26,7 @@ public class DieRoller : MonoBehaviour
 
     void OnMouseDown()
     {
+        Debug.Log(dieSprites.Length);
         if (isRolling) return; // <-- NEW: si está rodando, ignorar clic
         RollDie();
     }
@@ -54,6 +55,6 @@ public class DieRoller : MonoBehaviour
         if (boardManager != null)
             boardManager.OnDieRolled(rollNumber);
 
-        isRolling = false; // <-- NEW: desbloquear el dado
+        isRolling = false;
     }
 }

@@ -44,4 +44,12 @@ public class Pawn : MonoBehaviour
         }
         transform.position = target;
     }
+
+    public void ExitHome(Vector3 exitPos)
+    {
+        if (!isAtHome) return; // ya salió
+        LeaveHome();
+        MoveTo(exitPos); // usa tu MoveTo() ya existente
+    }
+
 }
