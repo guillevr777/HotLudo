@@ -63,6 +63,9 @@ public class BoardManager : MonoBehaviour
                 Debug.Log("MovPawn: salió 5 y hay fichas en home -> sacar ficha");
                 bool success = movPawn.TryExitHome(currentPlayerIndex);
                 if (!success) Debug.LogWarning("No se pudo sacar ficha del home (unexpected)");
+                // Nota: TryExitHome inicia una coroutine que mueve la ficha a la entrada
+                // Decidimos pasar turno en cuanto se saque (si esa es la regla). Si quieres esperar a que termine, cambia lógica.
+                EndTurn();
             }
             else
             {
@@ -85,6 +88,10 @@ public class BoardManager : MonoBehaviour
             if (p != null && !p.IsAtHome())
             {
                 Debug.Log($"MovPawn: mover Pawn [{currentPlayerIndex},{i}] {pasos} pasos");
+
+                // Asegurarnos de asignar pathBase y finalPath correctamente antes de mover
+                EnsurePawnPathsAssigned(p);
+
                 StartCoroutine(MovePawnAndFinish(p, pasos));
                 return;
             }
@@ -97,17 +104,34 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator MovePawnAndFinish(Pawn pawn, int steps)
     {
-        // Asignar path según el color si aún no tiene
-        if (pawn.path == null || pawn.path.Length == 0)
-        {
-            pawn.path = GetPathByPlayer(pawn.playerIndex);
-            Debug.Log($"Asignado path a {pawn.name}");
-        }
+        // Asegurarnos de que los paths están asignados (si no se hizo antes)
+        EnsurePawnPathsAssigned(pawn);
 
+        // Delegamos la corutina de movimiento en MovPawn (espera hasta que termine)
         yield return StartCoroutine(movPawn.MovePawnCoroutine(pawn, steps));
 
-        Debug.Log($"Movimiento completado para {pawn.name}, casillaIndex={pawn.casillaIndex}");
+        Debug.Log($"Movimiento completado para {pawn.name}, casillaIndex={pawn.casillaIndex}, inFinal={pawn.inFinal}");
         EndTurn();
+    }
+
+    // Asegura que pawn.pathBase y pawn.finalPath están asignados con los arrays correctos
+    private void EnsurePawnPathsAssigned(Pawn pawn)
+    {
+        if (pawn == null) return;
+
+        // pathBase es el recorrido común (siempre)
+        if (pawn.pathBase == null || pawn.pathBase.Length == 0)
+        {
+            pawn.pathBase = pathBase;
+            Debug.Log($"BoardManager: asignado pathBase a {pawn.name}");
+        }
+
+        // finalPath según jugador
+        if (pawn.finalPath == null || pawn.finalPath.Length == 0)
+        {
+            pawn.finalPath = GetFinalPathByPlayer(pawn.playerIndex);
+            Debug.Log($"BoardManager: asignado finalPath a {pawn.name}");
+        }
     }
 
     public void EndTurn()
@@ -123,15 +147,17 @@ public class BoardManager : MonoBehaviour
         return $"Player{currentPlayerIndex}";
     }
 
-    private Transform[] GetPathByPlayer(int playerIndex)
+    // Devuelve el finalPath según jugador (azul NO usa finalPathAzul para su base recorrido;
+    // finalPathAzul sólo se usa cuando la ficha entra a la columna final)
+    private Transform[] GetFinalPathByPlayer(int playerIndex)
     {
         switch (playerIndex)
         {
-            case 0: return pathBase;          // Azul usa pathBase
+            case 0: return finalPathAzul;
             case 1: return finalPathAmarillo;
             case 2: return finalPathVerde;
             case 3: return finalPathRojo;
-            default: return pathBase;
+            default: return null;
         }
     }
 }
