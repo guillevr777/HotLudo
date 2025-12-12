@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1943264809474300332}
   - component: {fileID: 2809271722910071218}
   - component: {fileID: 6134207465109717185}
-  - component: {fileID: 3262185158745679338}
   - component: {fileID: 6096283430313863980}
   m_Layer: 0
   m_Name: Die
@@ -139,26 +138,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.363246, y: 1.336493}
   m_EdgeRadius: 0
---- !u!114 &3262185158745679338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5611867937730964807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a98c4b728ac518045973567cd64cbb57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DieRoller
-  dieSprites:
-  - {fileID: -1815625823664879899, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  - {fileID: 8754631090437682804, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  - {fileID: 5542297916538816281, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  - {fileID: -1778436320341457493, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  - {fileID: 2941528559377587764, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  - {fileID: -6774703673271019300, guid: 4d6fe60a38b9283449c1bbcbb0d98100, type: 3}
-  boardManager: {fileID: 7088557820883691284, guid: b61ce1d30c732c44ca86d3b21ed57bcc, type: 3}
 --- !u!95 &6096283430313863980
 Animator:
   serializedVersion: 7
