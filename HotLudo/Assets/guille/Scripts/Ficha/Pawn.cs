@@ -141,4 +141,11 @@ public class Pawn : MonoBehaviour
         }
     }
 
+    void OnMouseDown()
+    {
+        BoardManager bm = FindObjectOfType<BoardManager>();
+        if (bm == null) return;
+
+        bm.OnPawnSelected(this);
+    }
 }
