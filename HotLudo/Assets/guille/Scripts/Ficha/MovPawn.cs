@@ -1,16 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 /// <summary>
 /// MovPawn: coordina movimientos concretos de un Pawn.
 /// - TryExitHome(playerIndex): saca la primera ficha en home y la pone en entryIndex (usa coroutine)
-/// - MovePawnCoroutine(pawn, steps): mueve 'steps' casillas paso a paso esperando cada animación
+/// - MovePawnCoroutine(pawn, steps): mueve 'steps' casillas paso a paso esperando cada animaciÃ³n
 /// </summary>
 public class MovPawn : MonoBehaviour
 {
     [Header("Referencias")]
     public PosicionInicioManager inicioManager; // para localizar pawns (GetPawn)
-    public BoardManager boardManager;           // para obtener pathBase y final paths y los índices
+    public BoardManager boardManager;           // para obtener pathBase y final paths y los Ã­ndices
 
     void Awake()
     {
@@ -18,7 +18,7 @@ public class MovPawn : MonoBehaviour
         if (boardManager == null) Debug.LogWarning("MovPawn: boardManager no asignado");
     }
 
-    // Intenta sacar la primera ficha en home del jugador. Devuelve true si sacó una ficha (la corutina ya ha empezado).
+    // Intenta sacar la primera ficha en home del jugador. Devuelve true si sacÃ³ una ficha (la corutina ya ha empezado).
     public bool TryExitHome(int playerIndex)
     {
         Debug.Log($"MovPawn: TryExitHome para player {playerIndex}");
@@ -47,7 +47,7 @@ public class MovPawn : MonoBehaviour
             }
         }
 
-        Debug.Log("MovPawn: No se encontró ficha en home para sacar");
+        Debug.Log("MovPawn: No se encontrÃ³ ficha en home para sacar");
         return false;
     }
 
@@ -59,7 +59,7 @@ public class MovPawn : MonoBehaviour
 
         // NOTA: pawn ya tiene pathBase y finalPath asignados dentro de ExitHomeCoroutine.
         // Para que movPawn conozca finalEntryIndex, lo pediremos desde boardManager cuando movamos.
-        Debug.Log($"MovPawn: Pawn {pawn.name} ha salido del home y está en casillaIndex={pawn.casillaIndex}");
+        Debug.Log($"MovPawn: Pawn {pawn.name} ha salido del home y estÃ¡ en casillaIndex={pawn.casillaIndex}");
     }
 
     // Mueve un pawn 'steps' pasos paso a paso. Devuelve cuando haya terminado.
@@ -75,18 +75,18 @@ public class MovPawn : MonoBehaviour
 
         if (pawn.IsAtHome())
         {
-            Debug.LogWarning($"MovPawn: {pawn.name} está en home, no se moverá.");
+            Debug.LogWarning($"MovPawn: {pawn.name} estÃ¡ en home, no se moverÃ¡.");
             yield break;
         }
 
-        // Necesitamos el índice en base que marca la entrada a finalPath
+        // Necesitamos el Ã­ndice en base que marca la entrada a finalPath
         int playerIndex = pawn.playerIndex;
         int finalEntryIndexOnBase = boardManager.finalEntryIndexOnBase[playerIndex];
 
         int remaining = steps;
         while (remaining > 0)
         {
-            // Si no está en final aún:
+            // Si no estÃ¡ en final aÃºn:
             if (!pawn.inFinal)
             {
                 // calcular siguiente casilla en base
@@ -95,7 +95,7 @@ public class MovPawn : MonoBehaviour
                 pawn.casillaIndex = next;
 
                 // Si hemos alcanzado la casilla que marca la entrada al final, y hay finalPath definido,
-                // cambiamos el modo a inFinal *después* de mover a la casilla de base (o en función de reglas).
+                // cambiamos el modo a inFinal *despuÃ©s* de mover a la casilla de base (o en funciÃ³n de reglas).
                 Debug.Log($"MovPawn: {pawn.name} avanzando en pathBase a index {pawn.casillaIndex}");
                 // mover a la casilla
                 yield return StartCoroutine(pawn.MoveOneStepCoroutine(0.18f));
@@ -107,8 +107,8 @@ public class MovPawn : MonoBehaviour
                     if (pawn.finalPath != null && pawn.finalPath.Length > 0)
                     {
                         pawn.inFinal = true;
-                        pawn.finalIndex = -1; // la próxima iteración incrementará a 0 y moverá a finalPath[0]
-                        Debug.Log($"{pawn.name}: ha alcanzado finalEntryOnBase ({finalEntryIndexOnBase}) -> entrará a finalPath en próximos pasos");
+                        pawn.finalIndex = -1; // la prÃ³xima iteraciÃ³n incrementarÃ¡ a 0 y moverÃ¡ a finalPath[0]
+                        Debug.Log($"{pawn.name}: ha alcanzado finalEntryOnBase ({finalEntryIndexOnBase}) -> entrarÃ¡ a finalPath en prÃ³ximos pasos");
                     }
                 }
             }
@@ -118,9 +118,9 @@ public class MovPawn : MonoBehaviour
                 pawn.finalIndex++;
                 if (pawn.finalIndex >= pawn.finalPath.Length)
                 {
-                    // hemos llegado al final del camino final; bloquear en la última casilla
+                    // hemos llegado al final del camino final; bloquear en la Ãºltima casilla
                     pawn.finalIndex = pawn.finalPath.Length - 1;
-                    Debug.Log($"{pawn.name}: ya en la última casilla final, no se mueve más.");
+                    Debug.Log($"{pawn.name}: ya en la Ãºltima casilla final, no se mueve mÃ¡s.");
                     yield break;
                 }
 
@@ -134,7 +134,7 @@ public class MovPawn : MonoBehaviour
         yield break;
     }
 
-    // Devuelve el finalPath según jugador
+    // Devuelve el finalPath segÃºn jugador
     private Transform[] GetFinalPathForPlayer(int playerIndex)
     {
         switch (playerIndex)

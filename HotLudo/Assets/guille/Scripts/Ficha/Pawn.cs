@@ -83,7 +83,8 @@ public class Pawn : MonoBehaviour
         Debug.Log($"{name}: ExitHome -> casillaIndex = {casillaIndex}, destino = {dest}");
 
         // animar movimiento hasta la casilla de entrada
-        yield return MoveToCoroutine(dest, 0.22f);
+        // Velocidad de mov de la ficha
+        yield return MoveToCoroutine(dest, 0.30f);
     }
 
     /// <summary>

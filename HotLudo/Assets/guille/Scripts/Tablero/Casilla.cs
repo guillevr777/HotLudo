@@ -1,79 +1,66 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public enum TipoCasilla { Normal, Segura, Salida, Meta }
+public enum CellType
+{
+    Normal,
+    Safe,
+    Exit,
+    Final
+}
 
 public class Casilla : MonoBehaviour
 {
-    [Header("Identificador de la casilla")]
-    public int index;
-
     [Header("Tipo de casilla")]
-    public TipoCasilla tipo = TipoCasilla.Normal;
+    public CellType cellType = CellType.Normal;
 
     [Header("Posiciones para fichas")]
-    public Transform[] posiciones; 
+    public Transform posA;
+    public Transform posB;
 
-    [HideInInspector]
-    public List<Ficha> fichasEnCasilla = new List<Ficha>();
+    private Pawn pawnA;
+    private Pawn pawnB;
 
-
-    // Añadir ficha a esta casilla
-    public void AñadirFicha(Ficha ficha)
+    // ──────────────
+    // Ocupación
+    // ──────────────
+    public bool HasFreeSlot()
     {
-        fichasEnCasilla.Add(ficha);
-
-        int slot = fichasEnCasilla.Count - 1;
-        if (slot >= posiciones.Length)
-            slot = posiciones.Length - 1;
-
-        Vector3 nuevaPos = posiciones[slot].position;
-        nuevaPos.z = -1f; 
-        ficha.transform.position = nuevaPos;
-
-        ficha.casillaActual = this;   
-        ComprobarColision(ficha);     
+        return pawnA == null || pawnB == null;
     }
 
-
-    // Quitar ficha de esta casilla
-    public void QuitarFicha(Ficha ficha)
+    public int PawnCount()
     {
-        fichasEnCasilla.Remove(ficha);
+        int count = 0;
+        if (pawnA != null) count++;
+        if (pawnB != null) count++;
+        return count;
     }
 
-
-    // ¿Casilla bloqueada?
-    public bool EstaBloqueada()
+    // ──────────────
+    // Gestión de fichas
+    // ──────────────
+    public Vector3 GetFreePosition(Pawn pawn)
     {
-        if (fichasEnCasilla.Count < 2)
-            return false;
-
-        return fichasEnCasilla[0].color == fichasEnCasilla[1].color;
-    }
-
-    public Ficha ObtenerFichaEnemiga(ColorJugador color)
-    {
-        if (fichasEnCasilla.Count == 1 &&
-            fichasEnCasilla[0].color != color)
+        if (pawnA == null)
         {
-            return fichasEnCasilla[0];
+            pawnA = pawn;
+            return posA.position;
         }
 
-        return null;
+        if (pawnB == null)
+        {
+            pawnB = pawn;
+            return posB.position;
+        }
+
+        Debug.LogError($"❌ Casilla {name} llena (máx 2 fichas)");
+        return posA.position;
     }
 
-
-    // Comprobar colisión al entrar una ficha
-    private void ComprobarColision(Ficha fichaEntrante)
+    public void RemovePawn(Pawn pawn)
     {
-        if (tipo == TipoCasilla.Segura)
-            return;
-
-        if (fichasEnCasilla.Count == 2)
-        {
-            if (EstaBloqueada())
-                return;
-        }
+        if (pawnA == pawn) pawnA = null;
+        else if (pawnB == pawn) pawnB = null;
     }
 }

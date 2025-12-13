@@ -13,6 +13,9 @@ public class BoardManager : MonoBehaviour
     [Header("Referencias a otros managers")]
     public PosicionInicioManager inicioManager; // Para acceder a las fichas
     public MovPawn movPawn;                     // Script encargado de mover fichas
+    
+    [Header("UI")]
+    public TurnUIManager turnUI;
 
     [Header("Indices de entrada en pathBase por jugador (configurar)")]
     public int[] entryIndexOnBasePath = new int[4];   // índice de salida del home
@@ -31,7 +34,10 @@ public class BoardManager : MonoBehaviour
     void Start()
     {
         Debug.Log("BoardManager: Start - jugador inicial -> " + GetCurrentPlayerName());
+        if (turnUI != null)
+            turnUI.UpdateTurnUI(currentPlayerIndex, GetCurrentPlayerName());
     }
+
 
     public void OnDieRolled(int roll)
     {
@@ -43,76 +49,99 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        // 1️⃣ Revisar si hay fichas en home
         bool algunaEnHome = false;
+        bool algunaFueraDeHome = false;
+
+        // Revisar estado de fichas
         for (int i = 0; i < 4; i++)
         {
             Pawn p = inicioManager.GetPawn(currentPlayerIndex, i)?.GetComponent<Pawn>();
-            if (p != null && p.IsAtHome())
-            {
-                algunaEnHome = true;
-                break;
-            }
+            if (p == null) continue;
+
+            if (p.IsAtHome()) algunaEnHome = true;
+            else algunaFueraDeHome = true;
         }
 
-        // 2️⃣ Caso: salió un 5
+        // 🎲 1️⃣ SALE 5
         if (roll == 5)
         {
             if (algunaEnHome)
             {
-                Debug.Log("MovPawn: salió 5 y hay fichas en home -> sacar ficha");
-                bool success = movPawn.TryExitHome(currentPlayerIndex);
-                if (!success) Debug.LogWarning("No se pudo sacar ficha del home (unexpected)");
-                // Nota: TryExitHome inicia una coroutine que mueve la ficha a la entrada
-                // Decidimos pasar turno en cuanto se saque (si esa es la regla). Si quieres esperar a que termine, cambia lógica.
-                EndTurn();
+                Debug.Log("Sale 5 y hay fichas en home → sacar ficha (NO pasa turno)");
+                movPawn.TryExitHome(currentPlayerIndex);
+                return; // NO pasa turno
+            }
+            else if (algunaFueraDeHome)
+            {
+                Debug.Log("Sale 5 y no hay fichas en home → mover 5");
+                MoverPrimerPawnFueraDelHome(5, false);
+                return;
+            }
+        }
+
+        // 🎲 2️⃣ SALE 6
+        if (roll == 6)
+        {
+            if (algunaFueraDeHome)
+            {
+                Debug.Log("Sale 6 y hay fichas fuera → mover 6 y REPITE turno");
+                MoverPrimerPawnFueraDelHome(6, true);
+                return;
             }
             else
             {
-                Debug.Log("MovPawn: salió 5 pero no hay fichas en home -> mover ficha 5 pasos");
-                MoverPrimerPawnFueraDelHome(5);
+                Debug.Log("Sale 6 pero todas en home → pasa turno");
+                EndTurn();
+                return;
             }
         }
-        else // 3️⃣ Caso: salió otro número distinto de 5
+
+        // 🎲 3️⃣ OTRO NÚMERO
+        if (algunaFueraDeHome)
         {
-            Debug.Log("MovPawn: número distinto de 5 -> mover ficha disponible");
-            MoverPrimerPawnFueraDelHome(roll);
+            Debug.Log($"Sale {roll} → mover ficha y pasar turno");
+            MoverPrimerPawnFueraDelHome(roll, false);
+        }
+        else
+        {
+            Debug.Log("No hay fichas para mover → pasa turno");
+            EndTurn();
         }
     }
 
-    private void MoverPrimerPawnFueraDelHome(int pasos)
+
+
+
+    private void MoverPrimerPawnFueraDelHome(int pasos, bool repetirTurno)
     {
         for (int i = 0; i < 4; i++)
         {
             Pawn p = inicioManager.GetPawn(currentPlayerIndex, i)?.GetComponent<Pawn>();
             if (p != null && !p.IsAtHome())
             {
-                Debug.Log($"MovPawn: mover Pawn [{currentPlayerIndex},{i}] {pasos} pasos");
-
-                // Asegurarnos de asignar pathBase y finalPath correctamente antes de mover
                 EnsurePawnPathsAssigned(p);
-
-                StartCoroutine(MovePawnAndFinish(p, pasos));
+                StartCoroutine(MovePawnAndFinish(p, pasos, repetirTurno));
                 return;
             }
         }
 
-        Debug.LogWarning("BoardManager: no hay fichas fuera del home para mover");
-        EndTurn(); // evitar bloqueo si no hay ficha
-    }
-
-
-    private IEnumerator MovePawnAndFinish(Pawn pawn, int steps)
-    {
-        // Asegurarnos de que los paths están asignados (si no se hizo antes)
-        EnsurePawnPathsAssigned(pawn);
-
-        // Delegamos la corutina de movimiento en MovPawn (espera hasta que termine)
-        yield return StartCoroutine(movPawn.MovePawnCoroutine(pawn, steps));
-
-        Debug.Log($"Movimiento completado para {pawn.name}, casillaIndex={pawn.casillaIndex}, inFinal={pawn.inFinal}");
         EndTurn();
     }
+
+
+
+
+    private IEnumerator MovePawnAndFinish(Pawn pawn, int steps, bool repetirTurno)
+    {
+        yield return StartCoroutine(movPawn.MovePawnCoroutine(pawn, steps));
+
+        if (!repetirTurno)
+            EndTurn();
+        else
+            Debug.Log("Turno repetido por sacar 6");
+    }
+
+
 
     // Asegura que pawn.pathBase y pawn.finalPath están asignados con los arrays correctos
     private void EnsurePawnPathsAssigned(Pawn pawn)
@@ -137,8 +166,13 @@ public class BoardManager : MonoBehaviour
     public void EndTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % 4;
-        Debug.Log($"Turno terminado. Siguiente jugador: {GetCurrentPlayerName()} (index {currentPlayerIndex})");
+
+        Debug.Log($"Turno terminado. Siguiente jugador: {GetCurrentPlayerName()}");
+
+        if (turnUI != null)
+            turnUI.UpdateTurnUI(currentPlayerIndex, GetCurrentPlayerName());
     }
+
 
     public string GetCurrentPlayerName()
     {
