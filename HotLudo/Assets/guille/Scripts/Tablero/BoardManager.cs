@@ -69,6 +69,7 @@ public class BoardManager : MonoBehaviour
             {
                 Debug.Log("Sale 5 y hay fichas en home → sacar ficha (NO pasa turno)");
                 movPawn.TryExitHome(currentPlayerIndex);
+
                 return; // NO pasa turno
             }
             else if (algunaFueraDeHome)
@@ -108,8 +109,6 @@ public class BoardManager : MonoBehaviour
             EndTurn();
         }
     }
-
-
 
 
     private void MoverPrimerPawnFueraDelHome(int pasos, bool repetirTurno)

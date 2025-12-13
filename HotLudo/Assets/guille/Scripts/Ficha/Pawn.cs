@@ -140,4 +140,5 @@ public class Pawn : MonoBehaviour
             yield return MoveToCoroutine(pathBase[casillaIndex].position, duration);
         }
     }
+
 }
