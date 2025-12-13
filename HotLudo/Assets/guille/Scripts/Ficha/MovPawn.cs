@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// MovPawn: coordina movimientos concretos de un Pawn.
-/// - TryExitHome(playerIndex): saca la primera ficha en home y la pone en entryIndex (usa coroutine)
-/// - MovePawnCoroutine(pawn, steps): mueve 'steps' casillas paso a paso esperando cada animación
-/// </summary>
 public class MovPawn : MonoBehaviour
 {
     [Header("Referencias")]
-    public PosicionInicioManager inicioManager; // para localizar pawns (GetPawn)
-    public BoardManager boardManager;           // para obtener pathBase y final paths y los índices
+    public PosicionInicioManager inicioManager;
+    public BoardManager boardManager;
 
     void Awake()
     {
@@ -18,31 +13,42 @@ public class MovPawn : MonoBehaviour
         if (boardManager == null) Debug.LogWarning("MovPawn: boardManager no asignado");
     }
 
-    // Intenta sacar la primera ficha en home del jugador. Devuelve true si sacó una ficha (la corutina ya ha empezado).
+    // Intenta sacar la primera ficha en home del jugador.
     public bool TryExitHome(int playerIndex)
     {
         Debug.Log($"MovPawn: TryExitHome para player {playerIndex}");
 
+        int entryIndex = boardManager.entryIndexOnBasePath[playerIndex];
+        Casilla entryCasilla = boardManager.pathBase[entryIndex].GetComponent<Casilla>();
+
+        if (entryCasilla == null)
+        {
+            Debug.LogError($"MovPawn: La Transform de entrada (index {entryIndex}) no tiene script Casilla.");
+            return false;
+        }
+
+        // Regla de Bloqueo de Salida: Si hay 2 fichas en la casilla de salida, no se puede sacar.
+        if (entryCasilla.PawnCount() >= 2)
+        {
+            Debug.Log($"MovPawn: La casilla de salida ({entryCasilla.name}) ya tiene 2 fichas. Bloqueada la salida.");
+            return false;
+        }
+
         for (int i = 0; i < 4; i++)
         {
             GameObject go = inicioManager.GetPawn(playerIndex, i);
-            if (go == null) { Debug.Log($"MovPawn: pawn [{playerIndex},{i}] null"); continue; }
+            if (go == null) continue;
             Pawn pawn = go.GetComponent<Pawn>();
-            if (pawn == null) { Debug.Log($"MovPawn: pawn [{playerIndex},{i}] sin script Pawn"); continue; }
+            if (pawn == null) continue;
 
             if (pawn.IsAtHome())
             {
-                // obtener entryIndex y finalEntryIndex desde boardManager
-                int entryIndex = boardManager.entryIndexOnBasePath[playerIndex];
-                int finalEntryIndex = boardManager.finalEntryIndexOnBase[playerIndex];
-
                 Transform[] basePath = boardManager.pathBase;
                 Transform[] finalPath = GetFinalPathForPlayer(playerIndex);
 
-                Debug.Log($"MovPawn: Sacando pawn [{playerIndex},{i}] a pathBase index {entryIndex}, finalEntryIndex={finalEntryIndex}");
+                Debug.Log($"MovPawn: Sacando pawn [{playerIndex},{i}] a pathBase index {entryIndex}");
 
-                // Llamamos al ExitHomeCoroutine del pawn y lo iniciamos (espera dentro del coroutine)
-                StartCoroutine(DoExitAndSetPaths(pawn, entryIndex, basePath, finalPath, finalEntryIndex));
+                StartCoroutine(DoExit(pawn, entryCasilla, entryIndex, basePath, finalPath));
                 return true;
             }
         }
@@ -51,90 +57,107 @@ public class MovPawn : MonoBehaviour
         return false;
     }
 
-    // Coroutine que llama al ExitHomeCoroutine y luego asigna el finalEntryIndex en el pawn (se gestiona en el MovePawnCoroutine)
-    private IEnumerator DoExitAndSetPaths(Pawn pawn, int entryIndex, Transform[] basePath, Transform[] finalPath, int finalEntryIndexOnBase)
+    // Coroutine de salida
+    private IEnumerator DoExit(Pawn pawn, Casilla entryCasilla, int entryIndex, Transform[] basePath, Transform[] finalPath)
     {
-        // Ejecutar la salida (esto mueve la ficha hasta la casilla de entrada)
-        yield return StartCoroutine(pawn.ExitHomeCoroutine(entryIndex, basePath, finalPath, finalEntryIndexOnBase));
+        pawn.pathBase = basePath;
+        pawn.finalPath = finalPath;
 
-        // NOTA: pawn ya tiene pathBase y finalPath asignados dentro de ExitHomeCoroutine.
-        // Para que movPawn conozca finalEntryIndex, lo pediremos desde boardManager cuando movamos.
-        Debug.Log($"MovPawn: Pawn {pawn.name} ha salido del home y está en casillaIndex={pawn.casillaIndex}");
+        Vector3 dest = pawn.SetCurrentCasilla(entryCasilla);
+        yield return StartCoroutine(pawn.MoveToCoroutine(dest, 0.30f));
+
+        pawn.LeaveHome();
+        pawn.casillaIndex = entryIndex;
+        pawn.inFinal = false;
+        pawn.finalIndex = -1;
+
+        CheckAndEat(pawn, entryCasilla);
     }
 
-    // Mueve un pawn 'steps' pasos paso a paso. Devuelve cuando haya terminado.
+    // Mueve un pawn 'steps' pasos paso a paso.
     public IEnumerator MovePawnCoroutine(Pawn pawn, int steps)
     {
-        if (pawn == null)
+        if (pawn == null || pawn.IsAtHome())
         {
-            Debug.LogError("MovPawn: MovePawnCoroutine pawn null");
+            Debug.LogError("MovPawn: MovePawnCoroutine pawn null o en home");
             yield break;
         }
 
-        Debug.Log($"MovPawn: MovePawnCoroutine iniciada para {pawn.name} pasos={steps}");
-
-        if (pawn.IsAtHome())
-        {
-            Debug.LogWarning($"MovPawn: {pawn.name} está en home, no se moverá.");
-            yield break;
-        }
-
-        // Necesitamos el índice en base que marca la entrada a finalPath
-        int playerIndex = pawn.playerIndex;
-        int finalEntryIndexOnBase = boardManager.finalEntryIndexOnBase[playerIndex];
+        int finalEntryIndexOnBase = boardManager.finalEntryIndexOnBase[pawn.playerIndex];
+        Casilla finalCasilla = null;
 
         int remaining = steps;
         while (remaining > 0)
         {
-            // Si no está en final aún:
-            if (!pawn.inFinal)
+            // 1. Calcular el índice de la Casilla de destino para el siguiente paso
+            int nextCasillaIndex = pawn.casillaIndex;
+            bool nextInFinal = pawn.inFinal;
+            int nextFinalIndex = pawn.finalIndex;
+
+            if (!nextInFinal)
             {
-                // calcular siguiente casilla en base
-                int next = pawn.casillaIndex + 1;
-                if (next >= pawn.pathBase.Length) next = 0; // wrap around
-                pawn.casillaIndex = next;
+                nextCasillaIndex = (nextCasillaIndex + 1) % pawn.pathBase.Length;
 
-                // Si hemos alcanzado la casilla que marca la entrada al final, y hay finalPath definido,
-                // cambiamos el modo a inFinal *después* de mover a la casilla de base (o en función de reglas).
-                Debug.Log($"MovPawn: {pawn.name} avanzando en pathBase a index {pawn.casillaIndex}");
-                // mover a la casilla
-                yield return StartCoroutine(pawn.MoveOneStepCoroutine(0.18f));
-                remaining--;
-
-                // Si hemos llegado a la casilla que define la entrada a final, activar inFinal
-                if (pawn.casillaIndex == finalEntryIndexOnBase)
+                if (nextCasillaIndex == finalEntryIndexOnBase)
                 {
-                    if (pawn.finalPath != null && pawn.finalPath.Length > 0)
-                    {
-                        pawn.inFinal = true;
-                        pawn.finalIndex = -1; // la próxima iteración incrementará a 0 y moverá a finalPath[0]
-                        Debug.Log($"{pawn.name}: ha alcanzado finalEntryOnBase ({finalEntryIndexOnBase}) -> entrará a finalPath en próximos pasos");
-                    }
+                    nextInFinal = true;
+                    nextFinalIndex = 0;
                 }
             }
             else
             {
-                // estamos ya en finalPath, avanzamos finalIndex
-                pawn.finalIndex++;
-                if (pawn.finalIndex >= pawn.finalPath.Length)
+                nextFinalIndex++;
+                if (nextFinalIndex >= pawn.finalPath.Length)
                 {
-                    // hemos llegado al final del camino final; bloquear en la última casilla
-                    pawn.finalIndex = pawn.finalPath.Length - 1;
-                    Debug.Log($"{pawn.name}: ya en la última casilla final, no se mueve más.");
-                    yield break;
+                    nextFinalIndex = pawn.finalPath.Length - 1;
                 }
+            }
 
-                Debug.Log($"MovPawn: {pawn.name} avanzando en finalPath a index {pawn.finalIndex}");
-                yield return StartCoroutine(pawn.MoveOneStepCoroutine(0.18f));
-                remaining--;
+            // 2. Obtener la Casilla de destino (script)
+            Transform targetTransform = nextInFinal
+                ? pawn.finalPath[nextFinalIndex]
+                : pawn.pathBase[nextCasillaIndex];
+
+            Casilla nextCasilla = targetTransform.GetComponent<Casilla>();
+
+            // Regla de Bloqueo de Puente: Si la casilla de destino es un puente, el movimiento se detiene.
+            if (nextCasilla != null && nextCasilla.IsBridge())
+            {
+                Debug.Log($"MovPawn: La casilla {nextCasilla.name} es un puente. El movimiento se detiene en la casilla anterior.");
+                remaining = 0;
+                break;
+            }
+
+            // Si llegamos a la meta final (dentro del camino final), paramos después de este paso.
+            if (nextInFinal && nextFinalIndex == pawn.finalPath.Length - 1)
+            {
+                remaining = 1;
+            }
+
+            // 3. Ejecutar el movimiento
+            remaining--;
+
+            pawn.casillaIndex = nextCasillaIndex;
+            pawn.inFinal = nextInFinal;
+            pawn.finalIndex = nextFinalIndex;
+
+            Vector3 destPosition = pawn.SetCurrentCasilla(nextCasilla);
+            yield return StartCoroutine(pawn.MoveToCoroutine(destPosition, 0.18f));
+
+            if (remaining == 0)
+            {
+                finalCasilla = nextCasilla;
             }
         }
 
-        Debug.Log($"MovPawn: MovePawnCoroutine finalizada para {pawn.name}, casillaIndex={pawn.casillaIndex}, inFinal={pawn.inFinal}, finalIndex={pawn.finalIndex}");
-        yield break;
+        // La captura solo se ejecuta una vez en la casilla de aterrizaje.
+        if (finalCasilla != null)
+        {
+            CheckAndEat(pawn, finalCasilla);
+        }
     }
 
-    // Devuelve el finalPath según jugador
+
     private Transform[] GetFinalPathForPlayer(int playerIndex)
     {
         switch (playerIndex)
@@ -146,4 +169,77 @@ public class MovPawn : MonoBehaviour
             default: return null;
         }
     }
+
+    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
+
+    /// <summary>
+    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
+    /// </summary>
+    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
+
+    /// <summary>
+    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
+    /// </summary>
+    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
+
+    /// <summary>
+    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
+    /// </summary>
+    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
+
+    /// <summary>
+    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
+    /// </summary>
+    private void CheckAndEat(Pawn pawn, Casilla casillaActual)
+    {
+        if (casillaActual == null) return;
+
+        Debug.Log($"--- Inicio Chequeo de Captura ---");
+        Debug.Log($"Casilla: {casillaActual.name} | Tipo: {casillaActual.cellType} | Fichas: {casillaActual.PawnCount()}");
+
+
+        // =================================================================
+        // VERIFICACIÓN CLAVE: Si NO es CellType.Normal, la captura es imposible.
+        // =================================================================
+        if (casillaActual.cellType != CellType.Normal)
+        {
+            Debug.Log($"CheckAndEat: CASILLA SEGURA/ESPECIAL ({casillaActual.cellType}). Captura IMPOSIBLE.");
+            return;
+        }
+
+        // Si llegamos aquí, la casilla es CellType.Normal.
+
+        Pawn rival = casillaActual.GetRivalPawn(pawn.playerIndex);
+
+        if (rival == null)
+        {
+            Debug.Log($"CheckAndEat: No hay ficha rival para comer.");
+            return;
+        }
+
+        // Si hay un rival, verificamos si es una captura legal.
+        // Una captura es legal si es zona Normal Y la casilla tiene exactamente 2 fichas.
+        if (casillaActual.PawnCount() == 2)
+        {
+            Debug.Log($"¡CAPTURADO! {pawn.name} come a {rival.name} en zona Normal.");
+
+            rival.SetToStartPosition(rival.startPos);
+
+            // boardManager.OnPawnEaten(pawn.playerIndex); 
+        }
+        else
+        {
+            Debug.Log($"CheckAndEat: Hay rival ({rival.name}), pero el conteo de fichas ({casillaActual.PawnCount()}) no es 2. No se come.");
+        }
+
+        Debug.Log($"--- Fin Chequeo de Captura ---");
+    }
+
+    // --- Fin del método CheckAndEat en MovPawn.cs ---
+
+    // --- Fin del método CheckAndEat en MovPawn.cs ---
+
+    // --- Fin del método CheckAndEat en MovPawn.cs ---
+
+    // --- Fin del método CheckAndEat en MovPawn.cs ---
 }
