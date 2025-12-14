@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Tipos de casilla posibles
+/// </summary>
 public enum CellType
 {
     Normal,
     Safe,
     Exit,
-    Final // Casilla dentro del camino final (Meta)
+    Final
 }
 
+/// <summary>
+/// Controla ocupación, posiciones de fichas y capturas
+/// </summary>
 public class Casilla : MonoBehaviour
 {
     [Header("Tipo de casilla")]
@@ -18,28 +24,32 @@ public class Casilla : MonoBehaviour
     public Transform posA;
     public Transform posB;
 
-    // Slots fijos para casillas NO finales
+    // Fichas ocupando la casilla (Solo Normal/Safe/Exit)
     public Pawn pawnA;
     public Pawn pawnB;
 
-    // Lista para casillas FINALES (permite más de 2)
+    // Fichas en la casilla final (Solo Final)
     private List<Pawn> finalPawns = new List<Pawn>();
 
-    // ──────────────
-    // Ocupación
-    // ──────────────
+    /// <summary>
+    /// Devuelve si hay espacio libre en la casilla
+    /// </summary>
+    /// <returns></returns>
     public bool HasFreeSlot()
     {
         if (cellType == CellType.Final)
         {
-            // En la meta, siempre hay espacio hasta que estén las 4
+            // En la meta siempre hay espacio hasta que estén las 4
             return finalPawns.Count < 4;
         }
 
-        // Para el resto de casillas (Normal/Safe/Exit)
+        // Para el resto de casillas
         return pawnA == null || (posB != null && pawnB == null);
     }
 
+    /// <summary>
+    /// Retorna el número de fichas actualmente en la casilla
+    /// </summary>
     public int PawnCount()
     {
         if (cellType == CellType.Final)
@@ -54,9 +64,12 @@ public class Casilla : MonoBehaviour
         return count;
     }
 
+    /// <summary>
+    /// Comprueba si la casilla es un puente
+    /// </summary>
     public bool IsBridge()
     {
-        // La casilla final NUNCA es un puente
+        // La casilla final no son un puente
         if (cellType == CellType.Final) return false;
 
         // El resto de casillas
@@ -70,23 +83,21 @@ public class Casilla : MonoBehaviour
         return false;
     }
 
-    // ──────────────
-    // Gestión de fichas
-    // ──────────────
+    /// <summary>
+    /// Devuelve la posición libre para una ficha que llega a la casilla
+    /// </summary>
+    /// <param name="pawn">Ficha que se mueve</param>
     public Vector3 GetFreePosition(Pawn pawn)
     {
         if (cellType == CellType.Final)
         {
-            // En la meta, añadimos a la lista y devolvemos la posición central de la Casilla.
             if (!finalPawns.Contains(pawn))
             {
                 finalPawns.Add(pawn);
             }
-            // Retorna la posición de la Casilla, ya que no usamos posA/posB en la meta.
             return transform.position;
         }
 
-        // Casillas Normales/Seguras/Salida
         if (pawnA == null)
         {
             pawnA = pawn;
@@ -103,8 +114,9 @@ public class Casilla : MonoBehaviour
     }
 
     /// <summary>
-    /// Quita la referencia a la ficha de esta casilla.
+    /// Quita la referencia a la ficha de esta casilla
     /// </summary>
+    /// <param name="pawn">Ficha a remover</param>
     public void RemovePawn(Pawn pawn)
     {
         if (cellType == CellType.Final)
@@ -113,17 +125,14 @@ public class Casilla : MonoBehaviour
             return;
         }
 
-        // Casillas Normales/Seguras/Salida
         if (pawnA == pawn)
         {
             pawnA = null;
 
-            // CONSOLIDACIÓN
             if (posB != null && pawnB != null)
             {
                 pawnA = pawnB;
                 pawnB = null;
-                // Mueve visualmente la ficha que estaba en B a la posición de A
                 pawnA.transform.position = posA.position;
             }
         }
@@ -133,7 +142,11 @@ public class Casilla : MonoBehaviour
         }
     }
 
-    // Solo busca rivales en casillas NO finales
+    /// <summary>
+    /// Devuelve una ficha rival en casillas normales/seguras/salida
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador que llega</param>
+    /// <returns>Ficha rival o null</returns>
     public Pawn GetRivalPawn(int playerIndex)
     {
         if (cellType == CellType.Final) return null;

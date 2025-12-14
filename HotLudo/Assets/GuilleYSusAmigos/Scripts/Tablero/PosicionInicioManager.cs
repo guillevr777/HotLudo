@@ -1,21 +1,27 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Contiene información de inicio de cada jugador
+/// </summary>
 [System.Serializable]
 public class PlayerStartPositions
 {
-    public string playerName;             // Nombre del jugador
-    public Transform[] positions = new Transform[4]; // Posiciones HOME
-    public GameObject prefabPawn;         // Prefab de la ficha
+    public string playerName;             
+    public Transform[] positions = new Transform[4]; 
+    public GameObject prefabPawn;        
 }
 
+/// <summary>
+/// Gestiona la colocación inicial de las fichas en sus posiciones home
+/// </summary>
 public class PosicionInicioManager : MonoBehaviour
 {
     [Header("Configuración de jugadores")]
-    public PlayerStartPositions[] players = new PlayerStartPositions[4]; // Máximo 4 jugadores
+    public PlayerStartPositions[] players = new PlayerStartPositions[4]; 
 
     private GameObject[,] instantiatedPawns;
 
-    [HideInInspector] public int numeroJugadores = 2; // Se inicializa desde PlayerPrefs
+    [HideInInspector] public int numeroJugadores = 2; 
 
     void Awake()
     {
@@ -99,17 +105,16 @@ public class PosicionInicioManager : MonoBehaviour
     {
         if (playerIndex < 0 || playerIndex >= numeroJugadores)
         {
-            Debug.LogError("GetHomePosition → playerIndex fuera de rango");
+            Debug.LogError("GetHomePosition: playerIndex fuera de rango");
             return Vector3.zero;
         }
 
         if (pawnIndex < 0 || pawnIndex >= players[playerIndex].positions.Length)
         {
-            Debug.LogError("GetHomePosition → pawnIndex fuera de rango");
+            Debug.LogError("GetHomePosition: pawnIndex fuera de rango");
             return players[playerIndex].positions[0].position;
         }
 
         return players[playerIndex].positions[pawnIndex].position;
     }
 }
-

@@ -2,11 +2,16 @@
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Gestiona la interfaz de usuario que indica de quién es el turno
+/// </summary>
 public class TurnUIManager : MonoBehaviour
 {
     [Header("UI")]
-    public TextMeshProUGUI turnText; // Texto que muestra el turno
-    public Image pawnImage;          // Imagen donde se muestra la ficha
+    // Texto que muestra el turno
+    public TextMeshProUGUI turnText; 
+    // Imagen donde se muestra la ficha
+    public Image pawnImage;          
 
     [Header("Sprites de ficha por jugador")]
     public Sprite pawnAzulSprite;
@@ -20,17 +25,25 @@ public class TurnUIManager : MonoBehaviour
     public Color colorJugadorVerde = Color.green;
     public Color colorJugadorRojo = Color.red;
 
-    // Llamado por BoardManager cada vez que cambia el turno
+    /// <summary>
+    /// Actualiza la UI del turno
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador actual</param>
+    /// <param name="playerName">Nombre del jugador actual</param>
     public void UpdateTurnUI(int playerIndex, string playerName)
     {
-        // 1️⃣ Actualizar texto y color
+        // Actualizar texto y color
         turnText.text = $"{playerName.ToUpper()}";
         turnText.color = GetPlayerColor(playerIndex);
 
-        // 2️⃣ Actualizar sprite de ficha
+        // Actualizar sprite de ficha
         UpdatePawnVisual(playerIndex);
     }
 
+    /// <summary>
+    /// Actualiza la imagen de la ficha en la UI según el jugador
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador actual</param>
     private void UpdatePawnVisual(int playerIndex)
     {
         if (pawnImage == null)
@@ -51,6 +64,11 @@ public class TurnUIManager : MonoBehaviour
         pawnImage.enabled = true;
     }
 
+    /// <summary>
+    /// Devuelve el sprite correspondiente al jugador según su índice
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador</param>
+    /// <returns>Sprite de la ficha del jugador</returns>
     private Sprite GetPawnSprite(int playerIndex)
     {
         switch (playerIndex)
@@ -63,6 +81,11 @@ public class TurnUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Devuelve el color correspondiente al jugador según su índice
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador</param>
+    /// <returns>Color del jugador</returns>
     public Color GetPlayerColor(int playerIndex)
     {
         switch (playerIndex)

@@ -2,12 +2,15 @@
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Gestiona la interfaz de la escena de victoria
+/// </summary>
 public class VictoryUIManager : MonoBehaviour
 {
     [Header("UI")]
-    public Image backgroundPanel;       // Panel de fondo que cambia de color
-    public TextMeshProUGUI victoryText; // Texto que dir� "HAS GANADO"
-    public Image pawnImage;             // Sprite de la ficha ganadora
+    public Image backgroundPanel;       
+    public TextMeshProUGUI victoryText; 
+    public Image pawnImage;             
 
     [Header("Sprites de ficha por jugador")]
     public Sprite pawnAzulSprite;
@@ -21,10 +24,13 @@ public class VictoryUIManager : MonoBehaviour
     public Color colorJugadorVerde = Color.green;
     public Color colorJugadorRojo = Color.red;
 
-    [Header("Audio de victoria")]
-    public AudioClip victoryClip;  // Arrastra aquí el clip
+    [Header("Audio")]
+    public AudioClip victoryClip; 
     private AudioSource audioSource;
 
+    /// <summary>
+    /// Inicializa la UI y reproduce el sonido de victoria 
+    /// </summary>
     void Start()
     {
         // Configurar AudioSource
@@ -65,15 +71,20 @@ public class VictoryUIManager : MonoBehaviour
         }
 
         // Configurar AudioSource
-audioSource = GetComponent<AudioSource>();
-if(audioSource == null)
-    audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
+        if(audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
 
-// Reproducir audio una sola vez
-if(victoryClip != null)
-    audioSource.PlayOneShot(victoryClip);
+        // Reproducir audio una sola vez
+        if(victoryClip != null)
+            audioSource.PlayOneShot(victoryClip);
     }
 
+    /// <summary>
+    /// Devuelve el sprite de la ficha del jugador según su índice
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador</param>
+    /// <returns>Sprite de la ficha correspondiente</returns>
     private Sprite GetPawnSprite(int playerIndex)
     {
         switch (playerIndex)
@@ -86,6 +97,11 @@ if(victoryClip != null)
         }
     }
 
+    /// <summary>
+    /// Devuelve el color de fondo según el jugador ganador
+    /// </summary>
+    /// <param name="playerIndex">Índice del jugador</param>
+    /// <returns>Color de fondo correspondiente</returns>
     private Color GetPlayerColor(int playerIndex)
     {
         switch (playerIndex)

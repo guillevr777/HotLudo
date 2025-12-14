@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Gestiona el flujo principal del juego: turnos, movimientos de fichas y condición de victoria
+/// </summary>
 public class BoardManager : MonoBehaviour
 {
     [Header("Paths (asignar en Inspector)")]
@@ -23,8 +26,8 @@ public class BoardManager : MonoBehaviour
     public int[] finalEntryIndexOnBase = new int[4];
 
     [Header("Turnos")]
-    public int numeroJugadores = 2; // valor por defecto, se sobrescribirá
-    public int currentPlayerIndex = 0; // 0 = azul, 1 = amarillo, 2 = verde, 3 = rojo
+    public int numeroJugadores = 2; 
+    public int currentPlayerIndex = 0; 
 
     [HideInInspector] public bool esperandoSeleccionFicha = false;
     [HideInInspector] public int ultimoResultadoDado = 0;
@@ -42,9 +45,14 @@ public class BoardManager : MonoBehaviour
         Debug.Log("Número de jugadores: " + numeroJugadores);
     }
 
+    /// <summary>
+    /// Llamado desde DieRoller cuando el dado termina de rodar
+    /// Gestiona lógica de fichas en home y fuera de home
+    /// </summary>
+    /// <param name="roll">Valor del dado</param>
     public void OnDieRolled(int roll)
     {
-        Debug.Log($"BoardManager: OnDieRolled() jugador={GetCurrentPlayerName()} roll={roll}");
+        Debug.Log($"BoardManager: jugador={GetCurrentPlayerName()} roll={roll}");
 
         ultimoResultadoDado = roll;
 
@@ -61,42 +69,50 @@ public class BoardManager : MonoBehaviour
             else algunaFueraDeHome = true;
         }
 
-        // 🎲 Si sale 5 y hay fichas en home, sacar automáticamente
+        // Si sale 5 y hay fichas en home, sacar automáticamente
         if (roll == 5 && algunaEnHome)
         {
-            Debug.Log("Sale 5 y hay fichas en home → sacar ficha automáticamente");
             movPawn.TryExitHome(currentPlayerIndex);
             return;
         }
 
-        // 🎲 Si hay fichas fuera de home, activar selección manual
+        // Si hay fichas fuera de home, activar selección manual
         if (algunaFueraDeHome)
         {
-            Debug.Log("Esperando que el jugador seleccione ficha fuera de home");
             esperandoSeleccionFicha = true;
         }
         else
         {
-            Debug.Log("No hay fichas para mover → pasa turno");
+            Debug.Log("No hay fichas para mover pasa turno");
             EndTurn();
         }
     }
 
-    // Método llamado desde Pawn.cs al hacer clic
+    /// <summary>
+    /// Llamado desde Pawn.cs al hacer clic sobre una ficha
+    /// </summary>
+    /// <param name="pawn">Ficha seleccionada</param>
     public void OnPawnSelected(Pawn pawn)
     {
         if (!esperandoSeleccionFicha) return;
         if (pawn.playerIndex != currentPlayerIndex) return;
         if (pawn.IsAtHome())
         {
-            Debug.Log("Ficha en home, no se puede seleccionar");
             return;
         }
 
         esperandoSeleccionFicha = false;
+
+        // Inicia movimiento de ficha
         StartCoroutine(MovePawnAndFinish(pawn, ultimoResultadoDado, ultimoResultadoDado == 6));
     }
 
+    /// <summary>
+    /// Coroutine que mueve la ficha, chequea victoria y termina el turno
+    /// </summary>
+    /// <param name="pawn">Ficha a mover</param>
+    /// <param name="steps">Cantidad de pasos</param>
+    /// <param name="repetirTurno">Si el jugador obtiene 6</param>
     private IEnumerator MovePawnAndFinish(Pawn pawn, int steps, bool repetirTurno)
     {
         yield return StartCoroutine(movPawn.MovePawnCoroutine(pawn, steps));
@@ -110,6 +126,9 @@ public class BoardManager : MonoBehaviour
             Debug.Log("Turno repetido por sacar 6");
     }
 
+    /// <summary>
+    /// Finaliza el turno actual y pasa al siguiente jugador
+    /// </summary>
     public void EndTurn()
     {
         currentPlayerIndex = (currentPlayerIndex + 1) % numeroJugadores;
@@ -118,6 +137,9 @@ public class BoardManager : MonoBehaviour
             turnUI.UpdateTurnUI(currentPlayerIndex, GetCurrentPlayerName());
     }
 
+    /// <summary>
+    /// Devuelve el nombre del jugador actual
+    /// </summary>
     public string GetCurrentPlayerName()
     {
         if (inicioManager != null && inicioManager.players != null && currentPlayerIndex < inicioManager.players.Length)
@@ -126,6 +148,10 @@ public class BoardManager : MonoBehaviour
         return $"Player{currentPlayerIndex}";
     }
 
+    /// <summary>
+    /// Define los paths de una ficha si no los tiene asignados
+    /// </summary>
+    /// <param name="pawn">La ficha el path</param>
     private void EnsurePawnPathsAssigned(Pawn pawn)
     {
         if (pawn == null) return;
@@ -137,6 +163,11 @@ public class BoardManager : MonoBehaviour
             pawn.finalPath = GetFinalPathByPlayer(pawn.playerIndex);
     }
 
+    /// <summary>
+    /// Obtiene el path final correspondiente a un jugador
+    /// </summary>
+    /// <param name="playerIndex">El índice del jugador</param>
+    /// <returns>El final path correspondiente</returns>
     private Transform[] GetFinalPathByPlayer(int playerIndex)
     {
         switch (playerIndex)
@@ -150,8 +181,9 @@ public class BoardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Comprueba si el jugador actual ha ganado (todas sus fichas en finalPath)
+    /// Comprueba si un jugador ha cumplido la condición de victoria
     /// </summary>
+    /// <param name="playerIndex">El índice del jugador</param>
     private void CheckWinCondition(int playerIndex)
     {
         bool todasEnFinal = true;
@@ -182,7 +214,7 @@ public class BoardManager : MonoBehaviour
     private void GameWon(int playerIndex)
     {
         esperandoSeleccionFicha = false;
-        Debug.Log($"🎉 ¡{inicioManager.players[playerIndex].playerName} gana el juego! 🎉");
+        Debug.Log($"¡{inicioManager.players[playerIndex].playerName} gana el juego!");
 
         // Guardamos el índice para la escena de victoria
         PlayerPrefs.SetInt("WinnerIndex", playerIndex);

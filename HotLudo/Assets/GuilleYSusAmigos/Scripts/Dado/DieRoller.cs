@@ -1,24 +1,31 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Lanzamiento, animación, sonido y resultado
+/// </summary>
 public class DieRoller : MonoBehaviour
 {
+    [Header("Sprites del dado")]
     [SerializeField] private Sprite[] dieSprites;
+
+    [Header("Audio")]
     [SerializeField] private AudioClip diceRollingClip;
 
     private SpriteRenderer sr;
     private Animator anim;
     private AudioSource audioSource;
 
-
-    // Referencia a otros scripts
+    [Header("Referencias")]
     public BoardManager boardManager;
 
-    // Guardará el número aleatorio (0–5)
+    // Valor aleatorio 
     private int pendingRoll;
-    // Estado del dado
+    // Estado actual del dado
     private bool isRolling = false;
 
-
+    /// <summary>
+    /// Inicialización de componentes
+    /// </summary>
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -33,48 +40,49 @@ public class DieRoller : MonoBehaviour
             Debug.Log("DieRoller: Se añadió AudioSource automáticamente");
         }
 
-        // Mostrar sprite inicial
+        // Mostrar el primer sprite del dado al inicio
         if (dieSprites.Length > 0)sr.sprite = dieSprites[0];
     }
 
     /// <summary>
-    /// // Detecta el clic del ratón sobre el dado
+    /// Detecta el clic del ratón sobre el dado y lanza el dado
     /// </summary>
     void OnMouseDown()
     {
-        if (isRolling) return;  // Evitar múltiples lanzamientos simultáneos
-
+        // Evitar múltiples lanzamientos simultáneos
+        if (isRolling) return;  
         RollDie();
     }
 
     /// <summary>
-    /// // Acciona la animación del dado
+    /// Inicia la animación y el sonido del dado, eligiendo un valor aleatorio
     /// </summary>
     void RollDie()
     {
         isRolling = true;
 
-        // Selecciona un número aleatorio entre 0 y cantidad de sprites
+        // Seleccionar número aleatorio entre 0 y cantidad de sprites
         pendingRoll = Random.Range(0, dieSprites.Length);
 
-        // Activo animación
+        // Activar animación
         anim.enabled = true;
         anim.SetTrigger("RollTrigger");
 
-        // Reproducir sonido del dado
+        // Reproducir sonido del dado mientras gira
         if (diceRollingClip != null && audioSource != null)
         {
             audioSource.clip = diceRollingClip;
-            audioSource.loop = true; // Loop mientras gira
+            audioSource.loop = true; 
             audioSource.Play();
         }
     }
 
     /// <summary>
-    /// Llamamos Animation Event al terminar la animación
+    /// Aplica el resultado del dado y llama al BoardManager
     /// </summary>
     public void ApplyResult()
     {
+        // Detener sonido de dado girando
         if (audioSource != null && audioSource.isPlaying)
         {
             audioSource.Stop();
@@ -84,13 +92,13 @@ public class DieRoller : MonoBehaviour
         // Mostrar la cara final del dado
         sr.sprite = dieSprites[pendingRoll];
 
-        // Apagar animador para que se quede la cara fija
+        // Apagar animador para mantener la cara fija
         anim.enabled = false;
 
         int rollNumber = pendingRoll + 1;
-        Debug.Log("DieRoller: Valor final del dado = " + rollNumber);
+        Debug.Log("DieRoller: Valor del dado = " + rollNumber);
 
-        // Mandar el número al BoardManager
+        // Mandar al BoardManager el resultado
         if (boardManager != null)
         {
             boardManager.OnDieRolled(rollNumber);

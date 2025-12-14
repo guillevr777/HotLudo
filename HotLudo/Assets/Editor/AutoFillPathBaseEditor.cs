@@ -1,5 +1,4 @@
-﻿// Assets/Editor/AutoFillAllPathsEditor.cs
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 public class AutoFillAllPathsEditor : EditorWindow
@@ -116,7 +115,6 @@ public class AutoFillAllPathsEditor : EditorWindow
             }
         }
 
-        // Apply each parent
         int filled = 0;
         Undo.RecordObject(boardManager, "AutoFillAllPaths");
 
@@ -136,7 +134,6 @@ public class AutoFillAllPathsEditor : EditorWindow
 
         if (parentFinalAmarillo != null)
         {
-            // try both possible property names for compatibility
             if (!AssignTransformArrayToProperty(boardManager, "finalPathAmarillo", parentFinalAmarillo))
                 AssignTransformArrayToProperty(boardManager, "pathAmarillo", parentFinalAmarillo);
             filled++;
@@ -163,7 +160,6 @@ public class AutoFillAllPathsEditor : EditorWindow
         Debug.Log($"AutoFillAllPaths: completado. Arrays rellenados: {filled}");
     }
 
-    // asigna al serialized property (array) el array de children del parent
     bool AssignTransformArrayToProperty(BoardManager bm, string propertyName, Transform parent)
     {
         if (bm == null || parent == null) return false;

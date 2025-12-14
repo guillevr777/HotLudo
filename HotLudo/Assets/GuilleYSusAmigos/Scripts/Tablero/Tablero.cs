@@ -1,12 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Enum que representa los colores de los jugadores
+/// </summary>
 public enum ColorJugador { Rojo, Azul, Amarillo, Verde }
 
+/// <summary>
+/// Gestiona el tablero del juego
+/// Contiene las casillas del recorrido principal y los caminos finales de cada jugador
+/// </summary>
 public class Tablero : MonoBehaviour
 {
-    [Header("Recorrido principal (0–69) en orden")]
-    public List<Casilla> casillas; // 69 casillas
+    [Header("Recorrido principal")]
+    public List<Casilla> casillas;
 
     [Header("Caminos finales")]
     public List<Casilla> caminoRojoFinal;
@@ -14,13 +21,21 @@ public class Tablero : MonoBehaviour
     public List<Casilla> caminoAmarilloFinal;
     public List<Casilla> caminoVerdeFinal;
 
-    // Devuelve una casilla del camino principal
+    /// <summary>
+    /// Devuelve la casilla del recorrido principal según el índice
+    /// </summary>
+    /// <param name="index">Índice de la casilla en el recorrido principal</param>
+    /// <returns>Casilla correspondiente en el tablero</returns>
     public Casilla GetCasilla(int index)
     {
         return casillas[index % casillas.Count];
     }
 
-    // Devuelve la casilla inicial del camino final
+    /// <summary>
+    /// Devuelve la casilla inicial del camino final de un jugador
+    /// </summary>
+    /// <param name="color">Color del jugador</param>
+    /// <returns>Primera casilla del camino final del jugador</returns>
     public Casilla GetInicioCaminoFinal(ColorJugador color)
     {
         switch (color)
@@ -41,8 +56,12 @@ public class Tablero : MonoBehaviour
         return null;
     }
 
-
-    // Devuelve una casilla interna del camino final
+    /// <summary>
+    /// Devuelve una casilla interna del camino final de un jugador
+    /// </summary>
+    /// <param name="color">Color del jugador</param>
+    /// <param name="paso">Paso dentro del camino final</param>
+    /// <returns>Casilla correspondiente en el camino final</returns>
     public Casilla GetCasillaFinal(ColorJugador color, int paso)
     {
         switch (color)

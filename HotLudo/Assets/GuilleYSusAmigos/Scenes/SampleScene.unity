@@ -1197,7 +1197,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Truno del jugador
+  m_text: Turno del jugador
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2935,7 +2935,7 @@ PrefabInstance:
       objectReference: {fileID: 1990744201}
     - target: {fileID: 1895625408212230093, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: cellType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1903978448124422003, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3295,7 +3295,7 @@ PrefabInstance:
       objectReference: {fileID: 1990744237}
     - target: {fileID: 3053164711875826584, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: cellType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3084944234163844437, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: posA
@@ -3887,7 +3887,7 @@ PrefabInstance:
       objectReference: {fileID: 1990744305}
     - target: {fileID: 5401201508062097418, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: cellType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5460338383314468661, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4623,7 +4623,7 @@ PrefabInstance:
       objectReference: {fileID: 1990744269}
     - target: {fileID: 8474622425607273277, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: cellType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8497040167154689942, guid: ca1f561143c89cf47b5452abd41561e8, type: 3}
       propertyPath: m_LocalPosition.y
