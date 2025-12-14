@@ -1,5 +1,6 @@
 using UnityEngine;
-using TMPro;  // Necesario si usas TMP_InputField
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuJugadoresControl : MonoBehaviour
 {
@@ -48,8 +49,7 @@ public class MenuJugadoresControl : MonoBehaviour
             PlayerPrefs.SetString("Jugador" + (i + 1), nombres[i]);
         }
 
-        // Cargar la siguiente escena
-        // SceneManager.LoadScene("EscenaJuego");
+        SceneManager.LoadScene("SampleScene");
     }
 
 }

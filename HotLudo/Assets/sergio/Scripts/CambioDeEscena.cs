@@ -30,27 +30,7 @@ public class CambioDeEscena : MonoBehaviour
 
     public void IrAEscenaJuego2()
     {
-        int numero = cursor.NumeroSeleccionado;
-        PlayerPrefs.SetInt("JugadorSeleccionado", numero);
 
-        // Guardar los nombres y número de jugadores
-        string[] nombres = new string[numeroJugadores];
-        for (int i = 0; i < numeroJugadores; i++)
-        {
-            if (i < inputNombres.Length)
-                nombres[i] = inputNombres[i].text;
-            else
-                nombres[i] = "Jugador" + (i + 1); // Por defecto si falta un InputField
-        }
-
-        JugadoresData data = new JugadoresData();
-        data.numeroJugadores = numeroJugadores;
-        data.nombresJugadores = nombres;
-
-        string json = JsonUtility.ToJson(data);
-        PlayerPrefs.SetString("JugadoresData", json);
-        PlayerPrefs.Save();
-
-        SceneManager.LoadScene("EscenaPrueba");
+        SceneManager.LoadScene("SampleScene");
     }
 }
