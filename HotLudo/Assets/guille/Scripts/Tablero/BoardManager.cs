@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BoardManager : MonoBehaviour
 {
@@ -175,10 +176,11 @@ public class BoardManager : MonoBehaviour
         esperandoSeleccionFicha = false;
         Debug.Log($"🎉 ¡{inicioManager.players[playerIndex].playerName} gana el juego! 🎉");
 
-        // Opcional: bloquear el juego
-        // Time.timeScale = 0;
+        // Guardamos el índice para la escena de victoria
+        PlayerPrefs.SetInt("WinnerIndex", playerIndex);
+        PlayerPrefs.Save();
 
-        // Aquí puedes mostrar UI de ganador o reiniciar
+        // Cargar la escena de victoria
+        SceneManager.LoadScene("VictoryScene");
     }
-
 }
