@@ -21,8 +21,21 @@ public class VictoryUIManager : MonoBehaviour
     public Color colorJugadorVerde = Color.green;
     public Color colorJugadorRojo = Color.red;
 
+    [Header("Audio de victoria")]
+    public AudioClip victoryClip;  // Arrastra aquí el clip
+    private AudioSource audioSource;
+
     void Start()
     {
+        // Configurar AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Reproducir audio una sola vez
+        if (victoryClip != null)
+            audioSource.PlayOneShot(victoryClip);
+
         int winnerIndex = PlayerPrefs.GetInt("WinnerIndex", -1);
 
         if (winnerIndex < 0 || winnerIndex > 3)
@@ -50,6 +63,15 @@ public class VictoryUIManager : MonoBehaviour
             pawnImage.sprite = GetPawnSprite(winnerIndex);
             pawnImage.enabled = true;
         }
+
+        // Configurar AudioSource
+audioSource = GetComponent<AudioSource>();
+if(audioSource == null)
+    audioSource = gameObject.AddComponent<AudioSource>();
+
+// Reproducir audio una sola vez
+if(victoryClip != null)
+    audioSource.PlayOneShot(victoryClip);
     }
 
     private Sprite GetPawnSprite(int playerIndex)

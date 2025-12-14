@@ -36,7 +36,7 @@ public class CasillaAssignerEditor : EditorWindow
     private static void AssignPositionsToAllCasillas()
     {
         // El tipo de objeto a buscar es Casilla
-        Casilla[] casillas = FindObjectsOfType<Casilla>();
+        Casilla[] casillas = FindObjectsByType<Casilla>(FindObjectsSortMode.None);
 
         int assignedCount = 0;
         int totalCount = casillas.Length;

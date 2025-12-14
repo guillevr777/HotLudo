@@ -23,6 +23,7 @@ public class BoardManager : MonoBehaviour
     public int[] finalEntryIndexOnBase = new int[4];
 
     [Header("Turnos")]
+    public int numeroJugadores = 2; // valor por defecto, se sobrescribirá
     public int currentPlayerIndex = 0; // 0 = azul, 1 = amarillo, 2 = verde, 3 = rojo
 
     [HideInInspector] public bool esperandoSeleccionFicha = false;
@@ -32,6 +33,13 @@ public class BoardManager : MonoBehaviour
     {
         if (turnUI != null)
             turnUI.UpdateTurnUI(currentPlayerIndex, GetCurrentPlayerName());
+    }
+
+    void Awake()
+    {
+        // Obtener el número de jugadores guardado desde MenuJugadores
+        numeroJugadores = PlayerPrefs.GetInt("JugadorSeleccionado", 2);
+        Debug.Log("Número de jugadores: " + numeroJugadores);
     }
 
     public void OnDieRolled(int roll)
@@ -104,7 +112,7 @@ public class BoardManager : MonoBehaviour
 
     public void EndTurn()
     {
-        currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        currentPlayerIndex = (currentPlayerIndex + 1) % numeroJugadores;
 
         if (turnUI != null)
             turnUI.UpdateTurnUI(currentPlayerIndex, GetCurrentPlayerName());

@@ -264,7 +264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 93960745}
-  - component: {fileID: 93960744}
+  - component: {fileID: 93960746}
   m_Layer: 0
   m_Name: MenuController
   m_TagString: Untagged
@@ -272,23 +272,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &93960744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 93960743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cf5df5d0bb1c6744803cf3409196379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuJugadoresControl
-  inputJugadores:
-  - {fileID: 281091515}
-  - {fileID: 789549661}
-  - {fileID: 1036795374}
-  - {fileID: 1754650021}
 --- !u!4 &93960745
 Transform:
   m_ObjectHideFlags: 0
@@ -304,6 +287,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &93960746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93960743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64ec51c6f3c9da9438e29da31b065978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuJugadoresManager
+  inputJugadores:
+  - {fileID: 281091515}
+  - {fileID: 789549661}
+  - {fileID: 1036795374}
+  - {fileID: 1754650021}
 --- !u!1 &281091513
 GameObject:
   m_ObjectHideFlags: 0
@@ -3112,7 +3112,6 @@ GameObject:
   - component: {fileID: 1866364686}
   - component: {fileID: 1866364685}
   - component: {fileID: 1866364684}
-  - component: {fileID: 1866364687}
   m_Layer: 5
   m_Name: Button (Legacy)
   m_TagString: Untagged
@@ -3184,9 +3183,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1866364687}
-        m_TargetAssemblyTypeName: CambioDeEscena, Assembly-CSharp
-        m_MethodName: IrAEscenaJuego2
+      - m_Target: {fileID: 93960746}
+        m_TargetAssemblyTypeName: MenuJugadoresManager, Assembly-CSharp
+        m_MethodName: ContinuarJuego
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3234,25 +3233,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866364682}
   m_CullTransparentMesh: 1
---- !u!114 &1866364687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866364682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f43336198b3c4488a5d9402bf0cd9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CambioDeEscena
-  cursor: {fileID: 0}
-  inputNombres:
-  - {fileID: 281091515}
-  - {fileID: 789549661}
-  - {fileID: 1036795374}
-  - {fileID: 1754650021}
-  numeroJugadores: 0
 --- !u!1 &1877748055
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,10 +7,18 @@ public class MovPawn : MonoBehaviour
     public PosicionInicioManager inicioManager;
     public BoardManager boardManager;
 
+    [Header("Audio")]
+    public AudioClip eatPawnClip;      // Clip de sonido al comer ficha
+    private AudioSource audioSource;   // Referencia al AudioSource
+
     void Awake()
     {
         if (inicioManager == null) Debug.LogWarning("MovPawn: inicioManager no asignado");
         if (boardManager == null) Debug.LogWarning("MovPawn: boardManager no asignado");
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     // Intenta sacar la primera ficha en home del jugador.
@@ -170,23 +178,6 @@ public class MovPawn : MonoBehaviour
         }
     }
 
-    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
-
-    /// <summary>
-    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
-    /// </summary>
-    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
-
-    /// <summary>
-    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
-    /// </summary>
-    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
-
-    /// <summary>
-    /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
-    /// </summary>
-    // --- Dentro de MovPawn.cs (mantén el resto del script igual) ---
-
     /// <summary>
     /// Comprueba si la ficha que ha movido (pawn) debe comer a alguna otra en la casilla (casillaActual).
     /// </summary>
@@ -225,6 +216,13 @@ public class MovPawn : MonoBehaviour
 
             rival.SetToStartPosition(rival.startPos);
 
+            if (eatPawnClip != null && audioSource != null)
+                audioSource.PlayOneShot(eatPawnClip);
+
+            // Sonido al comer
+            if (eatPawnClip != null && audioSource != null)
+                audioSource.PlayOneShot(eatPawnClip);
+
             // boardManager.OnPawnEaten(pawn.playerIndex); 
         }
         else
@@ -234,12 +232,4 @@ public class MovPawn : MonoBehaviour
 
         Debug.Log($"--- Fin Chequeo de Captura ---");
     }
-
-    // --- Fin del método CheckAndEat en MovPawn.cs ---
-
-    // --- Fin del método CheckAndEat en MovPawn.cs ---
-
-    // --- Fin del método CheckAndEat en MovPawn.cs ---
-
-    // --- Fin del método CheckAndEat en MovPawn.cs ---
 }

@@ -1,41 +1,43 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 public class PlayerStartPositions
 {
-    // Nombre del jugador (opcional)
-    public string playerName;
-    // Array de 4 posiciones iniciales (home)
-    public Transform[] positions = new Transform[4];
-    // Prefab de la ficha del jugador
-    public GameObject prefabPawn; 
+    public string playerName;             // Nombre del jugador
+    public Transform[] positions = new Transform[4]; // Posiciones HOME
+    public GameObject prefabPawn;         // Prefab de la ficha
 }
 
 public class PosicionInicioManager : MonoBehaviour
 {
-    // Array de jugadores con sus posiciones y prefabs
-    public PlayerStartPositions[] players = new PlayerStartPositions[4];
+    [Header("Configuración de jugadores")]
+    public PlayerStartPositions[] players = new PlayerStartPositions[4]; // Máximo 4 jugadores
 
-    // Guarda las fichas instanciadas para cada jugador
     private GameObject[,] instantiatedPawns;
+
+    [HideInInspector] public int numeroJugadores = 2; // Se inicializa desde PlayerPrefs
 
     void Awake()
     {
-        // Inicializamos el array para las fichas instanciadas
-        instantiatedPawns = new GameObject[players.Length, 4];
+        // Leer número de jugadores desde PlayerPrefs
+        numeroJugadores = PlayerPrefs.GetInt("JugadorSeleccionado", 2);
+        Debug.Log("PosicionInicioManager: Número de jugadores = " + numeroJugadores);
+
+        // Inicializar array según número de jugadores
+        instantiatedPawns = new GameObject[numeroJugadores, 4];
 
         PosicionarFichasIniciales();
     }
 
     /// <summary>
-    /// Instancia las fichas y las coloca en su posici�n inicial (home)
+    /// Instancia las fichas y las coloca en su posición inicial (home)
     /// </summary>
     void PosicionarFichasIniciales()
     {
-        for (int p = 0; p < players.Length; p++)
+        for (int p = 0; p < numeroJugadores; p++)
         {
-            // Obtenemos los datos del jugador
             PlayerStartPositions player = players[p];
+
             if (player.positions == null || player.positions.Length < 4)
             {
                 Debug.LogWarning($"PosicionInicioManager: Player {p} no tiene 4 posiciones asignadas");
@@ -50,19 +52,16 @@ public class PosicionInicioManager : MonoBehaviour
 
             for (int i = 0; i < 4; i++)
             {
-                // Obtenemos la posici�n inicial
                 Transform spawnPos = player.positions[i];
                 if (spawnPos == null)
                 {
-                    Debug.LogWarning($"PosicionInicioManager: Player {p}, posici�n {i} es null");
+                    Debug.LogWarning($"PosicionInicioManager: Player {p}, posición {i} es null");
                     continue;
                 }
 
-                // Instanciamos la ficha en la posici�n
                 GameObject pawn = Instantiate(player.prefabPawn, spawnPos.position, Quaternion.identity);
                 pawn.name = $"P{p + 1}_Pawn_{i}";
 
-                // Asignamos los datos al script Pawn
                 Pawn pawnScript = pawn.GetComponent<Pawn>();
                 if (pawnScript != null)
                 {
@@ -75,7 +74,6 @@ public class PosicionInicioManager : MonoBehaviour
                     Debug.LogWarning($"PosicionInicioManager: El prefab {player.prefabPawn.name} no tiene script Pawn");
                 }
 
-                // Guardamos en array para control futuro
                 instantiatedPawns[p, i] = pawn;
             }
         }
@@ -84,13 +82,34 @@ public class PosicionInicioManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Devuelve la ficha de un jugador y un �ndice
+    /// Devuelve la ficha de un jugador y un índice
     /// </summary>
     public GameObject GetPawn(int playerIndex, int pawnIndex)
     {
-        if (playerIndex < 0 || playerIndex >= players.Length) return null;
+        if (playerIndex < 0 || playerIndex >= numeroJugadores) return null;
         if (pawnIndex < 0 || pawnIndex >= 4) return null;
 
         return instantiatedPawns[playerIndex, pawnIndex];
     }
+
+    /// <summary>
+    /// Devuelve la posición HOME de un jugador y un índice
+    /// </summary>
+    public Vector3 GetHomePosition(int playerIndex, int pawnIndex)
+    {
+        if (playerIndex < 0 || playerIndex >= numeroJugadores)
+        {
+            Debug.LogError("GetHomePosition → playerIndex fuera de rango");
+            return Vector3.zero;
+        }
+
+        if (pawnIndex < 0 || pawnIndex >= players[playerIndex].positions.Length)
+        {
+            Debug.LogError("GetHomePosition → pawnIndex fuera de rango");
+            return players[playerIndex].positions[0].position;
+        }
+
+        return players[playerIndex].positions[pawnIndex].position;
+    }
 }
+

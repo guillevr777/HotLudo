@@ -661,6 +661,57 @@ MonoBehaviour:
   - {fileID: 1325603843}
   - {fileID: 1093042754}
   - {fileID: 1549314962}
+--- !u!1 &945677824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 945677826}
+  - component: {fileID: 945677825}
+  m_Layer: 0
+  m_Name: MenuController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &945677825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945677824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1075f301e76372b4a9bdf9264ae1e76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorSelector
+  cursor: {fileID: 1397468262}
+  opciones:
+  - {fileID: 807410833}
+  - {fileID: 1325603843}
+  - {fileID: 1093042754}
+  - {fileID: 1549314962}
+  moveSpeed: 10
+--- !u!4 &945677826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945677824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 344.87912, y: 245.39734, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1093042753
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,7 +1608,6 @@ GameObject:
   - component: {fileID: 1890708907}
   - component: {fileID: 1890708906}
   - component: {fileID: 1890708905}
-  - component: {fileID: 1890708908}
   m_Layer: 5
   m_Name: BotonJugar
   m_TagString: Untagged
@@ -1629,9 +1679,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1890708908}
-        m_TargetAssemblyTypeName: CambioDeEscena, Assembly-CSharp
-        m_MethodName: IrAEscenaJuego
+      - m_Target: {fileID: 945677825}
+        m_TargetAssemblyTypeName: CursorSelector, Assembly-CSharp
+        m_MethodName: ConfirmarSeleccion
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1679,21 +1729,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1890708903}
   m_CullTransparentMesh: 1
---- !u!114 &1890708908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890708903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f43336198b3c4488a5d9402bf0cd9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CambioDeEscena
-  cursor: {fileID: 852201525}
-  inputNombres: []
-  numeroJugadores: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1701,3 +1736,4 @@ SceneRoots:
   - {fileID: 768874481}
   - {fileID: 1105957150}
   - {fileID: 1810425264}
+  - {fileID: 945677826}
