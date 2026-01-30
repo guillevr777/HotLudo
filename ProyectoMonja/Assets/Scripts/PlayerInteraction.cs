@@ -1,39 +1,32 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    public int monedasContador = 0;
+    public int monedasEntregadasTotales = 0;
 
-    float range = 3f;
-    public LayerMask interactuableLayer;
+    [Header("Referencias de UI")]
+    public TextMeshProUGUI textoBolsillo;
 
-    
-
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        // 1. Definimos el rayo desde la posición de la cámara hacia adelante
-        Ray ray = new Ray(transform.position, transform.forward);
-        RaycastHit hit;
+        ActualizarUI();
+    }
 
-        // Visualización en el editor (solo visible en la escena)
-        Debug.DrawRay(ray.origin, ray.direction * range, Color.red);
-
-        // 2. Comprobamos si el rayo choca con algo en la capa seleccionada
-        if (Physics.Raycast(ray, out hit, range, interactuableLayer))
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
         {
-            // Aquí el jugador está mirando un objeto interactuable
-            if (Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                if (gameObject.tag == "Coin") {
-                    CollectCoins(hit.collider.gameObject);
-                }
-            }
+            monedasContador++;
+            ActualizarUI();
+            Destroy(other.gameObject);
         }
     }
 
-    void CollectCoins(GameObject obj)
+    public void ActualizarUI()
     {
-        Destroy(obj);
+        if (textoBolsillo != null)
+            textoBolsillo.text = "Monedas: " + monedasContador;
     }
 }
